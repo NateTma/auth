@@ -1,0 +1,68 @@
+<%- include('partials/header'); -%>
+
+<form action="/signup">
+    <h2>Sign up</h2>
+    <label for="name">Name</label>
+    <input type="text" name="name" required/>
+
+    <label for="email">Email</label>
+    <input type="text" name="email"/> 
+    <div class="email error"></div>
+
+    <label for="phone">Phone Number</label>
+    <input type="text" name="phone" required/>
+    <div class="number error"></div>
+
+    <label for="password">Password</label>
+    <input type="password" name="password" required />
+    <div class="password error"></div>
+    
+    <button>Sign up</button><br>
+
+    <% /*<p>Already have an account?</p>
+    <a  href="/login"><button type="button">Login </button></a>*/ %>
+  </form>
+
+  <%- include('partials/footer'); -%>
+
+  <script>
+    const form = document.querySelector('form');
+    const phoneError = document.querySelector('.phone.error')
+    const emailError = document.querySelector('.email.error');
+    const passwordError = document.querySelector('.password.error');
+  
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      //reset errors
+      emailError.textContent = '';
+      passwordError.textContent = '';
+      // get values
+      const name =form.name.value;
+      const phone=form.phone.value;
+      const email = form.email.value;
+      const password = form.password.value;
+  
+      try {
+        const res = await fetch('/signup', {
+            method: 'POST', 
+            body: JSON.stringify({ name, email, number, password }), 
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        console.log(data);
+        if (data.erros) {
+          emailError.textContent = data.errors.email;
+          passwordError.textCOntent = data.errors.email;
+        }
+        if (data.user) {
+          location.assign('/')
+        }
+      }
+      catch(err){
+        console.log(err);
+      }
+    })
+
+  
+  
